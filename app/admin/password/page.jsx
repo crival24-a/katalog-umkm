@@ -1,11 +1,21 @@
+"use client";
+
+import { useActionState, useEffect, useRef } from "react";
 import NavAdmin from "@/components/NavAdmin";
 import Input from "@/components/Input";
 import Tombol from "@/components/Tombol";
-import CatatanBelumAktif from "@/components/CatatanBelumAktif";
+import { gantiPassword } from "@/app/admin/actions";
 
-// US-05: form ganti password belum berfungsi.
-// Tugas peserta: admin yang sudah login bisa mengganti password-nya, diproses di server.
 export default function HalamanGantiPassword() {
+  const [state, formAction] = useActionState(gantiPassword, null);
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    if (state?.success) {
+      formRef.current?.reset();
+    }
+  }, [state]);
+
   return (
     <div className="flex flex-col gap-6 py-8">
       <NavAdmin />
@@ -15,7 +25,21 @@ export default function HalamanGantiPassword() {
           Ganti password bawaan segera setelah pertama kali masuk. Minimal 8 karakter.
         </p>
       </div>
-      <form className="flex max-w-sm flex-col gap-4">
+
+      {state?.success && (
+        <div className="max-w-sm rounded-xl border border-garis bg-permukaan p-4 text-sm font-medium text-utama">
+          {state.message}
+        </div>
+      )}
+
+      {state?.error && (
+        <div className="max-w-sm rounded-xl border border-garis bg-permukaan p-4 text-sm text-bahaya">
+          <p className="font-semibold">Terjadi kesalahan</p>
+          <p className="mt-1">{state.error}</p>
+        </div>
+      )}
+
+      <form ref={formRef} action={formAction} className="flex max-w-sm flex-col gap-4">
         <Input
           label="Password baru"
           name="password_baru"
@@ -36,7 +60,7 @@ export default function HalamanGantiPassword() {
           Simpan password
         </Tombol>
       </form>
-      <CatatanBelumAktif>Ganti password belum berfungsi: lihat US-05.</CatatanBelumAktif>
     </div>
   );
 }
+
