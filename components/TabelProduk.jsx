@@ -1,7 +1,7 @@
 import { formatRupiah } from "@/lib/format";
 import Tombol from "@/components/Tombol";
 
-export default function TabelProduk({ daftarProduk }) {
+export default function TabelProduk({ daftarProduk = [] }) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-garis">
       <table className="w-full min-w-[560px] text-left text-sm">
@@ -16,8 +16,16 @@ export default function TabelProduk({ daftarProduk }) {
           </tr>
         </thead>
         <tbody>
-          {daftarProduk.map((produk) => (
-            <tr key={produk.id} className="border-t border-garis">
+          {daftarProduk.length === 0 ? (
+            <tr>
+              <td colSpan={4} className="px-4 py-8 text-center text-teks-lembut">
+                Belum ada produk
+              </td>
+            </tr>
+          ) : (
+            daftarProduk.map((produk) => (
+              <tr key={produk.id} className="border-t border-garis">
+
               <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
                   <img src={produk.foto_url} alt="" className="h-10 w-10 rounded-md object-cover" />
@@ -38,8 +46,9 @@ export default function TabelProduk({ daftarProduk }) {
                 </div>
               </td>
             </tr>
-          ))}
-        </tbody>
+          ))
+        )}
+      </tbody>
       </table>
     </div>
   );
